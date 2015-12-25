@@ -27,7 +27,8 @@ BeltHeight=1.8;
 Wall=1.2;
 
 //Open option
-IsOpen=false;
+Open= "no"; // [yes,no]
+IsOpen=(Open=="yes");
 
 module pole(r,h){
     intersection(){
