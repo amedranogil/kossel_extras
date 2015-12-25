@@ -1,7 +1,7 @@
 
 SpoolW = 95;
 OB = 15.3;
-width = 30;
+width = 27;
 wall= 5;
 boltW=3.3;
 
