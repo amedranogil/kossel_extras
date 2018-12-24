@@ -1,21 +1,21 @@
 
 //Wrench size of the nut
-NutWrenchSize=4.5;
+NutWrenchSize=5.7;
 
 //Nut Height
-NutHeight=3;
+NutHeight=2.8;
 
 //Diameter of bolt 
-Diameter=3.5;
+Diameter=4;
 
 //Nut to wall ratio
 NutFixingRatio=1.5;
 
 //Bolt Head diameter
-BoltHeadD=4.5;
+BoltHeadD=6.5;
 
 //Bolt Head Height
-BoltHeadH=3;
+BoltHeadH=2;
 
 //Belt Width
 BeltWidth=7;
@@ -27,8 +27,7 @@ BeltHeight=1.8;
 Wall=1.2;
 
 //Open option
-Open= "no"; // [yes,no]
-IsOpen=(Open=="yes");
+IsOpen=true;
 
 module pole(r,h){
     intersection(){
@@ -51,11 +50,12 @@ module frame(l,w, wall=2,space=2){
 
 module part1(nws,nh,nsr,w1d,w2d,w2h,bw,bh){
     wall=Wall;
-    nd=nws*3/sqrt(3);
+    nd=nws*2*sqrt(3)/3;
+    echo(nd);
     w=bw+wall*2;
     difference(){
         frame((nd*nsr)*3,w, wall, bh);
-        translate([(nd*nsr)*1.5,w/2,0]) rotate([0,0,30]) cylinder(d=nd,h=nh,$fn=6);
+        translate([(nd*nsr)*1.5,w/2,0]) cylinder(d=nd,h=nh,$fn=6);
         translate([(nd*nsr)*1.5,w/2,0]) cylinder(d=w1d,h=(nd*nsr));
         translate([(nd*nsr)*1.5,w/2,(nd*nsr)-w2h]) cylinder(d=w2d,h=w2h);
         if(IsOpen){
@@ -66,7 +66,7 @@ module part1(nws,nh,nsr,w1d,w2d,w2h,bw,bh){
 }
 
 module part2(nws,nsr,w1d,bw,bh){
-    nd=nws*3/sqrt(3);
+    nd=nws*2*sqrt(3)/3;
     l=nd*nsr;
     difference(){
         union(){
