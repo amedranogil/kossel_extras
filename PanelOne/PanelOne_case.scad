@@ -167,7 +167,7 @@ else
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 
-beam=20;
+beam=15;
 
 function proc(p1,p2,q)= q*p2+(1-q)*p1;
 function proc2(p1,p2,s)=(p1-s)/(p1-p2);
@@ -216,7 +216,7 @@ module mount()
                 rotate([0,90,0])
                 {
                 cylinder(r=lcd_hole_d/2, h=50, $fn=20);
-                translate([0,0,9])
+                translate([0,0,11])
                     cylinder (r=m3_nut_diameter_bigger/2,h=50);
                 }
 	}
