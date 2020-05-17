@@ -3,29 +3,25 @@ include <raspberry.scad>
 m3i = 15; //openbeam 15mm
 maxy=85;
 maxx=56;
-angle = 36.5;
+angle = 0;
+anglez=30;
 w=1.8;
-bw=w;
+bw=3.7;
 stud=1.7;
 tops=bw-w-0.5;
 ztrans=0.6;
+xtrans=27;
+d=0.3;
 
 module rpitrans(a=0){
-    translate([w+tops,maxy,maxx*sin(a)+w])rotate([-a,0,-90])
-        children();
+    translate([
+    -xtrans,//w+tops,
+    xtrans*tan(90-anglez),//maxy-sin(anglez)*(maxx-0),
+    maxx*sin(a)+w+m3i-ztrans+d])
+        rotate([-a,0,-90+anglez])
+            children();
 }
 
-module ccubex(S,rem_ratio=0.5){
-    sep = S[0]*(1-rem_ratio)/2+S[0]*rem_ratio/2;
-    difference() {
-        cube(S);
-        hull(){
-            for ( i = [sep, S[1] -sep])
-            translate([sep,i,-1])
-            cylinder(d=S[0]*rem_ratio,h=S[2]+2);
-        }
-    }
-}
 module ccubey(S,rem_ratio=0.5){
     sep = S[1]*(1-rem_ratio)/2+S[1]*rem_ratio/2;
     difference() {
@@ -37,34 +33,25 @@ module ccubey(S,rem_ratio=0.5){
         }
     }
 }
-module ccubez(S,rem_ratio=0.5){
-    sep = S[2]*(1-rem_ratio)/2+S[2]*rem_ratio/2;
-    difference() {
-        cube(S);
-        rotate([0,-90,0])
-        hull(){
-            for ( i = [sep, S[1] -sep])
-            translate([sep,i,-S[0]-1])
-            cylinder(d=S[2]*rem_ratio,h=S[0]+2);
-        }
-    }
-}
+
 
 module bracket(a){
+    braketwidth= xtrans*tan(90-anglez) + xtrans*tan(anglez);
     translate([0,0,ztrans])
     difference(){
         union(){
-        ccubez([bw,maxy,3*m3i-ztrans],0.34); //nearest to beam
-        ccubex([cos(a)*maxx+w+tops,maxy,w],0.55); // bottom
-            
-        translate([w,0,min(maxx*sin(a),3*m3i-w-ztrans)])
-               cube([tops,maxy,w]); //topseparator
-        rpitrans(a) translate([0,0,-w]) ccubey([maxy,maxx,w],0.75); //rpi backplane
+            intersection () {
+                rpitrans(a) translate([0,0,-m3i-w]) cube([maxy,maxx,m3i]);
+                translate([0,-bw*tan(90-anglez),0])
+                cube([bw,braketwidth+bw*tan(90-anglez)+bw*tan(anglez),1*m3i-ztrans+d]); 
+            }//nearest to beam
+        
+            rpitrans(a) translate([0,0,-w]) ccubey([maxy,maxx,w],0.25); //rpi backplane
         rpitrans(a) standoffs(boardType = BPLUS,height = stud);
         }
         //bracket holes
-        yhs = maxy*0.235;
-        for (i = [yhs,maxy-yhs], j = [0,2])
+        yhs = braketwidth*0.235;
+        for (i = [yhs,braketwidth-yhs], j = [0,2])
             translate([0,i,-ztrans+m3i/2+j*m3i]) rotate([0,90,0]) {  
                 cylinder(d=3.5,h=w+tops);
                 translate([0,0,bw]) cylinder(d=6.0,h=tops+maxx/2);
@@ -79,7 +66,7 @@ module bracket(a){
 
 //open bean positions
 for (i = [0,2])
-%translate([-m3i,0,i*m3i]) cube([m3i,maxy,m3i]);
+%translate([-m3i,-20,i*m3i]) cube([m3i,maxy,m3i]);
 //buildplate()
 %translate([220-m3i,maxy/2,3*m3i+3]) cylinder(r=220,h=3);
 //rpi position
@@ -87,6 +74,4 @@ for (i = [0,2])
 %rpitrans(angle) translate([0,0,stud]) raspberry(BPLUS);
 
 bracket(angle);
-
-echo(bw+tops+cos(angle)*maxx);
     
