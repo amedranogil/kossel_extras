@@ -23,10 +23,16 @@ module glass_tab() {
     translate([0,sticky_offset+bed_dia/2,t/2-bed_height]) cylinder(d=bed_dia,h=bed_height+0.1,$fn=200);
   }
 
-  // Horizontal OpenBeam.
-  translate([0, 0, (15+t)/-2]) %
-    cube([100, 15, 15], center=true);
+
 }
 
-translate([0, 0, t/2]) glass_tab();
-echo (thickness);
+translate([0, 0, t/2])  rotate([0,0,30]) 
+difference(){
+    glass_tab();
+    rotate([0,0,-30]) translate([0,sticky_length/2+15/2+3,0]) cube([sticky_width*3,sticky_length,t],center=true);
+}
+
+//translate([0, 0, t/2]) glass_tab();
+// Horizontal OpenBeam.
+  translate([0, 0, (15)/-2]) %
+    cube([100, 15, 15], center=true);
